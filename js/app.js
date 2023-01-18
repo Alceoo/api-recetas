@@ -1,30 +1,11 @@
-/*App de recetas....
-La finalidad de la construcción de la app de recetas es que 
-nosotros podamos prácticar más a fondo las apis  y json.
-
-Claramente con promesas y programación funcional...
-
-
-Este proyecto estará hecho con un frameworkq ue se llama boosttrap
-y 3 apis distintas de la misma página...
-
-Tenemos uno para obtener todas las categorias
-Tenemos uno, para obtener todas las recetas de una categoría
-Y tendremos uno para obtener toda la informacion de un platillo
-
-VEREMOS CÓMO CONECTAR ESTAS 3, estaremos haciendo consultas cómo
-sea necesario, primero obtendremos las categorías, mostrarlas en el
-select y según yo seleccione se muestren los platillos y después 
-accedemos a cada uno de ellos...*/
-
-/*Podemos seleccionar la categoría en el select.
-Las categorias las obtendremos de una api, pero al iniciar la app yo ya tengo mis 
-valores de los selects, esos se traen desde una api..*/
+/*App de recetas....*/
 
 function iniciarApp(){//Al inciar la app quiero traerme las categorías para el select
     obtenerCategorias();
     console.log('iniciando app');
     
+    const selectCategorias = document.querySelector('#categorias');
+
     function obtenerCategorias(){
         console.log('obteniendo categorias');
         //CONECTANDO DATOS...
@@ -32,38 +13,46 @@ function iniciarApp(){//Al inciar la app quiero traerme las categorías para el 
 
         fetch(url)
             .then((respuesta) => respuesta.json())                
-            .then((datos) => mostrarCategorias(datos))
-          /*Esta parte ya es de cajón básicamente....
-          Ahora, si queremos amm hacer algo con esos datos, lo que tenemos que hacer
-          es extraerlos de datos...
-
-          Esto lo podemos hacer con destructuring, o div destructuring si queremos
-          acceder a elementos que están dentro de otros objetos básicamente...
-          */
+            .then((resultado) => mostrarCategorias(resultado.categories));
         
-        function mostrarCategorias(datos){
-            console.log(datos);
+        function mostrarCategorias(categorias = []){
+            
+            /*Aquí tengo que hacer destructuring sobre los objetos o el objeto en todo caso con
+            las propiedades que quiero sacar...*/
+        
+            /*O sea, me acaba de decir que en un montículo de objetos, no sólo se puede acceder
+            a las propiedades de estos con destructuring, sino que también se puede acceder a ellos
+            con la sintaxis de punto desde la funcion...
 
-       }
+            Y también me permite igualar mis datos ya extraídos de su arreglo de categorias a
+            un arreglo común, de este modo ya podemos iterar, ya que categorias ya es un 
+            arreglo...
+            Y ahora si, a hacer destructuring
+            */
+            categorias.forEach((ObjetosCategorias) => {
+                console.log(ObjetosCategorias);
+                const {idCategory, strCategory, strCategoryDescription, strCategoryThumb} = ObjetosCategorias; 
+                console.log(idCategory, strCategory, strCategoryDescription, strCategoryThumb);
+                /**Pues ahora, esto lo quiero meter en los selects de categorias, para ello en primera necesito
+                 seleccionar el elemento...*/
+                /*Sería crear los options si no me equivoco através de un inner html y después meterlos
+                en el select, ya que los options no tienen entrada dir ecta...*/
+                const option = document.createElement('option');
+
+                console.log(option);
+                /*Que por cada iteracion me cree un option, con un value de pss lo que queremos
+                quen este caso sería amm un strcategory */
+                option.value = `${strCategory}`;/*El value del option lo creo para después leer
+                por este mismo value*/
+                option.textContent = `${strCategory}`;
+                /*Y que me lo coloque en la categoria de select*/
+                selectCategorias.appendChild(option);
+            });  
+
+        }
     };
 
-    /**/
 
 }
 
 document.addEventListener('DOMContentLoaded', iniciarApp);
-
-/*Quedé en que iba a anotar los puntos que no entendiera, el primer punto fue lo de 
-iniciar el docuemento de esa manera.
-
-El segundo punto que no entiendo y es nuevo para mi, es que le pasemos un 
-método a una función con un valor de parámetro para la api...
-Y a su vez, es nuevo para mi, poder asignar esos valores a un arreglo desde el 
-mismo parámetro de un arreglo...
-Tengo que anotar en el cuaderno los pasos. si se puede con código pegado, tengo que 
-habilitar la extensión que deja en blanco el editor claramente...
-paso numero 3 completado, editor de texto en color blanco para la impresión de el ejemplo
-y los comentarios en el cuaderno, listo...
-*/
-
-
