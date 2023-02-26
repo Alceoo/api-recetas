@@ -1,5 +1,6 @@
 /*App de recetas....*/
-
+/*llamar y sacar el modal de boostrap, identificar a que le estoy dando 
+click y el evento del elemento flotante...*/
 function iniciarApp(){//Al inciar la app quiero traerme las categorías para el select
 
     const selectCategorias = document.querySelector('#categorias');
@@ -52,11 +53,6 @@ function iniciarApp(){//Al inciar la app quiero traerme las categorías para el 
         eliminarHmtlPrevio();  
         const headingAlert = document.createElement('h4');
         headingAlert.classList.add('text-center', 'text-block', 'my-5');
-        /*Aquí hay un problema, si hubo resultados o no hubo 
-        resutados, cómo le podría ha cer? mmmm si sería aquí? jajaja
-        no sería en un catch? ahh claro, si hay datosResultadoRecetas
-        imprmimo algo y si no lo hay no imprimo nada básicamente...*/    
-        
         if(datosResultadoRecetas.length > 0){
             headingAlert.textContent = `Su resultado es: `;
             setTimeout(() => {
@@ -69,25 +65,7 @@ function iniciarApp(){//Al inciar la app quiero traerme las categorías para el 
             }, 3000);
         };
         resultado.appendChild(headingAlert);
-        /*Básicamente aquí lo que hicimos fue decir...
-        
-        Si datosResultadoRecetas.lenght(si el largo de nuestro arreglo es verdadero, mayor a 0 o 
-            mejor dicho, si hay algo allí en ese largo de arreglo) entonces coloca un mensaje
-            de resultado: que sería el resultado es este.
-
-            : de lo contrario, si no es mayor a 0, coloca "no hay resultados".
-
-        ahora, lo que tendría que hacer sería eliminar el mensaje después de un tiempo...
-        pero sería sólo el no, 
-
-        este fallo  ocurriría cuando no se encuentren dos seguidos básicamente, podríamos
-        ponerle, si ya existe pues elimínlo, si no existe pss déjalo allí, pero para eso 
-        tendríamos que SEPARAR LAS VARIABLES, EN LO QUE SERÍA EL SI HAY, Y EL SI NO HAY...
-            headingAlert.textContent = datosResultadoRecetas.length ? 'Su resultado: ', : 'No hay resultados disponibles. 
-            esta sería la lógica más corta...
-        */    
-    
-
+     
         console.log(datosResultadoRecetas);
         //Ahora a iterar sobre datosResultadoRecetas
         datosResultadoRecetas.forEach((e) => {
@@ -118,40 +96,62 @@ function iniciarApp(){//Al inciar la app quiero traerme las categorías para el 
             recetaButton.classList.add('btn', 'btn-danger', 'w-100');
             recetaButton.textContent = 'Ver receta'; 
 
+        /*Aquí tenemos que identificar de alguna manera el boton al que le 
+        estamos dando click, disparar un evento y mostrar el modal...*/
+            //recetaButton.dataset.bsTarget = "#modal";
+            /*Así es cómo se conecta con boostrap, tendrá si amm data-set
+            o bien, identificador cómo modal*/
+            //recetaButton.dataset.bsToggle = "modal";
+            /*De esta manera llamamos el modal, con esto ya colocamos el buton
+            con los valores que le hemos puesto.*/
+
+        /*Ahora, cuando yo presione el btn de una receta yo quiero traerme la 
+        información de la receta, para ello tenemos que consultar la API y traerme 
+        la información.
+        
+        Así que lo que tengo que hacer es que UNA VEZ QUE PRESIONEMOS, MANDE LLAMAR 
+        otra función que consulte la api, para que se traiga esa receta en específico.
+        , veámos cómo hacerlo...
+
+        Ponemos en onclick, porque es un elemento flotante por así decirlo, 
+        ya que la primera vez que carga el html no existe, sino que se crea 
+        después de hacer algo, por lo que un event listener no nos serviría para
+        absolutamente nada...*/
+            
+            recetaButton.onclick = function(){
+                seleccionarReceta(idMeal);/*Y aquí a la receta le vamos a colocar el 
+
+                idMeal de cada receta, por lo que ya le estaríamos colocando el id al 
+                btn de esta manera al presionar el BOTON.*/
+                /*NOTA: SI NO LE PONEMOS CÓMO FUNCTION NOS VA A MARCAR ERRORES
+                , SI LO DEJAMOS CÓMO CALLBACK ESTE VA A ESPERAR A QUE OCURRA EL
+                EVENTO DE ONCLICK..*/
+            }
+
             recetaCarBody.append(recetaHeading, recetaButton);
 
             recetaCard.append(recetaImagen, recetaCarBody);
             contenedorReceta.appendChild(recetaCard);
             resultado.appendChild(contenedorReceta);
-            /*Los datos a evaluar son, str meal y el id, que es básicamente el nombre de la receta
-            y el id.
-            Para el nombre ya teenmos un lado donde colocarlo, sólo tenemso que crear el elemento
-            */
-
+          
         })
     }
     
-}/*Creo que aquí las Apis podrían empezar a interactuar entre si, de esta manera podríamos obtener
-por ejemplo la información de los platillos de otra api al hacer la consulta.
+}
 
-De igual manera cómo lo hemos estado haciendo, buscando que api tiene esa ifnroamcion, accediendo 
-a esa informacion, englobandola o en un objeto o en un arreglo y despues imprimiéndolo en pantalla.
-*/
-/*Ahora, ocurre un pequeño error...
+function seleccionarReceta(idRecetaBtn){/*Ahora, mi 3er api, el valor que tiene
+al final es el id, por lo que si queremos llamar la api y traernos la info
+de esa receta...*/
+    console.log(idRecetaBtn);
 
-Esto pasa cuando selecciono una categoría, me manda las recetas y eso.
-
-Pero si vuelvo a seleccionar otra categoría, lo que sucede es que me pone todo lo de la categoría anterior,
-esto lo mantiene y me pone lo de la siguiente categoría hasta abajo.
-
-Bien, yo quiero borrar mi resultado anterior...
-
-*/
+    const url = `https://themealdb.com/api/json/v1/1/lookup.php?i=${idRecetaBtn}`;
+    /*Aquí en el espacio de id, lo borramos y le colocamos el valor del id
+    que ya rescaté, que es idRecetaBtn*/
+    console.log(url);
+}
 function eliminarHmtlPrevio(){
     while (resultado.firstChild) {
         resultado.removeChild(resultado.firstChild)
     }
 }
 document.addEventListener('DOMContentLoaded', iniciarApp);
-/**/
-
